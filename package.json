@@ -14,6 +14,7 @@
     "cheerio": "^1.0.0-rc.2",
     "eventproxy": "^1.0.0",
     "request": "^2.88.0",
-    "superagent": "^3.8.3"
+    "superagent": "^3.8.3",
+    "zlib": "^1.0.5"
   }
 }
