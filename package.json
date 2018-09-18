@@ -1,0 +1,19 @@
+{
+  "name": "reptile",
+  "version": "1.0.0",
+  "description": "reptile demo",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index",
+    "start": "node server.js"
+  },
+  "author": "Lam",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^2.6.1",
+    "cheerio": "^1.0.0-rc.2",
+    "eventproxy": "^1.0.0",
+    "request": "^2.88.0",
+    "superagent": "^3.8.3"
+  }
+}
