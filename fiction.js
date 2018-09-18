@@ -1,10 +1,10 @@
 const http = require('http'),
-  superagent = require('superagent'),
-  cheerio = require('cheerio'),
-  async = require('async'),
-  eventproxy = require('eventproxy'),
+  superagent = require('superagent'), //客户端请求代理模块类似request
+  cheerio = require('cheerio'), //nodejs中的jq
+  async = require('async'), //解决同时过多请求
+  eventproxy = require('eventproxy'), //将串行等待变成并行等待，提升多异步协作场景下的执行效率
   fs = require('fs'),
-  mongoose = require('mongoose'),
+  mongoose = require('mongoose'), //mongoDB插件
   Schema = mongoose.Schema
 
 mongoose.connect(
