@@ -3,13 +3,33 @@ const http = require('http'),
   cheerio = require('cheerio'),
   async = require('async'),
   eventproxy = require('eventproxy'),
-  iconv = require('iconv-lite'),
-  fs = require('fs')
+  fs = require('fs'),
+  mongoose = require('mongoose'),
+  Schema = mongoose.Schema
+
+mongoose.connect(
+  'mongodb://localhost:27017/fictionBox',
+  err => {
+    if (err) {
+      console.log('数据库连接失败!')
+    } else {
+      console.log('数据库连接成功!')
+    }
+  }
+)
 require('superagent-charset')(superagent)
+
+//定义Schema
+const ficiton = new Schema({
+  title: String,
+  content: String
+})
+
+const reptileFiction = mongoose.model('Fiction', ficiton)
 
 var ep = new eventproxy(),
   fictionUrls = [],
-  url = 'http://www.quanshuwang.com/book/9/9055'
+  url = 'http://www.quanshuwang.com/book/44/44683'
 
 function start() {
   function onRequest(req, res) {
@@ -45,14 +65,26 @@ function start() {
             var content = $('.mainContenr')
             var title = $('.jieqi_title')
             for (var i = 0; i < content.length; i++) {
-              fs.writeFile(
-                `./textBox/${title.eq(i).text()}.doc`,
-                content.eq(i).text(),
-                function(err) {
+              //保存到mongodb
+              reptileFiction.create(
+                {
+                  title: title.eq(i).text(),
+                  content: content.eq(i).text()
+                },
+                (err, doc) => {
                   if (err) throw err
                   console.log('保存成功!')
                 }
               )
+              //保存到本地
+              // fs.writeFile(
+              //   `./textBox/${title.eq(i).text()}.txt`,
+              //   content.eq(i).text(),
+              //   function(err) {
+              //     if (err) throw err
+              //     console.log('保存成功!')
+              //   }
+              // )
             }
           })
 
@@ -62,21 +94,30 @@ function start() {
         }, delay)
       }
 
-      async.mapLimit(
+      //因为用mapLimit章节会乱,所以选择用mapSeries串行请求
+      async.mapSeries(
         articleUrl,
-        5,
-        function(url, callback) {
+        (url, callback) => {
           reptileMove(url, callback)
         },
-        function(err, result) {
-          // 4000 个 URL 访问完成的回调函数
-          // ...
-        }
+        (err, result) => {}
       )
+
+      // async.mapLimit(
+      //   articleUrl,
+      //   5,
+      //   function(url, callback) {
+      //     reptileMove(url, callback)
+      //   },
+      //   function(err, result) {
+      //     // 4000 个 URL 访问完成的回调函数
+      //     // ...
+      //   }
+      // )
     })
   }
   http.createServer(onRequest).listen(3020)
-  console.log('连接3020成功!')
+  console.log('app started at port 3020...')
 }
 
 start()
