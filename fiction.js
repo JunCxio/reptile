@@ -24,7 +24,7 @@ const ficiton = new Schema({
   title: String,
   content: String
 })
-
+//定义model
 const reptileFiction = mongoose.model('Fiction', ficiton)
 
 var ep = new eventproxy(),
@@ -65,7 +65,7 @@ function start() {
             var content = $('.mainContenr')
             var title = $('.jieqi_title')
             for (var i = 0; i < content.length; i++) {
-              //保存到mongodb
+              //新增到mongodb
               reptileFiction.create(
                 {
                   title: title.eq(i).text(),
@@ -94,7 +94,7 @@ function start() {
         }, delay)
       }
 
-      //因为用mapLimit章节会乱,所以选择用mapSeries串行请求
+      //因为用mapLimit章节会乱,所以选择用mapSeries串行请求,不过速度会挺慢的
       async.mapSeries(
         articleUrl,
         (url, callback) => {
